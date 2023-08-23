@@ -1,9 +1,10 @@
 import Veterinario from '../models/Veterinario.js'
 import generarJWT from '../helpers/generarJWT.js';
 import generarId from '../helpers/generarId.js';
+import emailRegistro from '../helpers/emailRegistro.js';
 
  const registrar = async (req, res) => {
-     const {email } = req.body
+     const {email, nombre } = req.body
 
     // Prevenir usuarios duplicados
     const existeUsuario = await Veterinario.findOne({email});
@@ -17,6 +18,13 @@ import generarId from '../helpers/generarId.js';
         // Guardar un nuevo Veterinario
         const veterinario = new Veterinario(req.body);
         const veterinarioGuardado = await veterinario.save();
+        // Enviar correo
+        emailRegistro({
+            email,
+            nombre,
+            token: veterinarioGuardado.token
+        });
+
         res.json(veterinarioGuardado);
     } catch (error) {
         console.log(`Error: ${error}`)
@@ -117,7 +125,7 @@ const perfil = (req, res) => {
         const veterinario = await Veterinario.findOne({ token })
 
         if (!veterinario) {
-            const error = new Error('Hubo un errort, token no encontrado')
+            const error = new Error('Hubo un error, token no encontrado')
             return res.status(400).json({msg: error.message})
         }
 

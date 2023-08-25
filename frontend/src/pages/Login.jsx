@@ -9,6 +9,8 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [alerta , setAlerta] = useState({})
 
+    const {setAuth} = useAuth()
+
     const navigate = useNavigate()
 
 
@@ -22,8 +24,9 @@ const Login = () => {
         try {
             
            const { data } = await clienteAxios.post('/veterinarios/login', { email, password})
-           const tokenGenerado = data.token
+           const tokenGenerado = data.token           
            localStorage.setItem('APV_token', tokenGenerado)
+           setAuth(data)
 
             navigate('/admin')
         } catch (error) {

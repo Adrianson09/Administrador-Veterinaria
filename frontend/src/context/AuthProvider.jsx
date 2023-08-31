@@ -9,7 +9,7 @@ const AuthProvider = ({children}) => {
 
     useEffect(() => {
     const autenticarUsuario = async () => {
-        const token = localStorage.getItem('APV_token')
+        const token = localStorage.getItem("APV_token")
             if (!token) {
                 setCargando(false)
                 return
@@ -34,7 +34,7 @@ const AuthProvider = ({children}) => {
     }, [])
 
     const cerrarSesion = () => {
-        localStorage.removeItem('APV_token')
+        localStorage.removeItem("APV_token")
         setAuth({})
     }
 
@@ -44,7 +44,7 @@ const AuthProvider = ({children}) => {
             auth,
             setAuth,
             cargando,
-            cerrarSesion
+            cerrarSesion,
         }}
         >
             {children}

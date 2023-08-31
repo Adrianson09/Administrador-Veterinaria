@@ -8,11 +8,12 @@ export const PacientesProvider = ({children}) => {
     const { auth } = useAuth();    
 
     const [pacientes, setPacientes] = useState([])
+    const [paciente, setPaciente] = useState({})
 
     useEffect(() => {
         const obtenerPacientes = async () => {
             try {
-                const token = localStorage.getItem('APV_token')
+                const token = localStorage.getItem("APV_token")
                 if(!token) return
 
                 const config = {

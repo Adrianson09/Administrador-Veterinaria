@@ -1,66 +1,63 @@
-import { createContext, useState, useEffect } from "react";
-import clienteAxios from "../config/axios";
-import useAuth from "../hooks/useAuth";
-
-const PacientesContext = createContext();
-
-export const PacientesProvider = ({children}) => {
-    const { auth } = useAuth();    
-
-    const [pacientes, setPacientes] = useState([])
-    const [paciente, setPaciente] = useState({})
-
-    useEffect(() => {
-        const obtenerPacientes = async () => {
-            try {
-                const token = localStorage.getItem("APV_token")
-                if(!token) return
-
-                const config = {
-                    headers:{
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-                const { data } = await clienteAxios('/pacientes', config)
-                setPacientes(data)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        obtenerPacientes()
-    }, []) 
-
-    const guardarPaciente = async (paciente) => {
-     try {
+import { createContext, useState, useEffect } from 'react'
+import clienteAxios from '../config/axios'
+import useAuth from '../hooks/useAuth'
+ 
+const PacientesContext = createContext()
+ 
+export const PacientesProvider = ({ children }) => {
+  const { auth } = useAuth()
+ 
+  const [pacientes, setPacientes] = useState([])
+  const [paciente, setPaciente] = useState({})
+ 
+  useEffect(() => {
+    const obtenerPacientes = async () => {
+      try {
         const token = localStorage.getItem('APV_token')
+        if (!token) return
+ 
         const config = {
-            headers:{
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            }
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
         }
-        const {data} = await clienteAxios.post('/pacientes', paciente, config)  
-        const {createdAt, updatedAt, __v, ...pacienteAlmacenado} = data
-        setPacientes([pacienteAlmacenado, ...pacientes])
-        
-     } catch (error) {
-        console.log(error.response.data.msg)
-     }
+        const { data } = await clienteAxios('/pacientes', config)
+        setPacientes(data)
+      } catch (error) {
+        console.log(error)
+      }
     }
-
-    return(
-        <PacientesContext.Provider
-            value={{
-                pacientes,
-                guardarPaciente
-            }}
-        >
-            {children}
-        </PacientesContext.Provider>
-    )
+    obtenerPacientes()
+  }, [auth])
+ 
+  const guardarPaciente = async (paciente) => {
+    try {
+      const token = localStorage.getItem('APV_token')
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const { data } = await clienteAxios.post('/pacientes', paciente, config)
+      const { createdAt, updatedAt, __v, ...pacienteAlmacenado } = data
+      setPacientes([pacienteAlmacenado, ...pacientes])
+    } catch (error) {
+      console.log(error.response.data.msg)
+    }
+  }
+ 
+  return (
+    <PacientesContext.Provider
+      value={{
+        pacientes,
+        guardarPaciente
+      }}
+    >
+      {children}
+    </PacientesContext.Provider>
+  )
 }
-
-
-
+ 
 export default PacientesContext

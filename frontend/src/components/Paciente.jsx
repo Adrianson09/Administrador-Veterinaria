@@ -1,6 +1,9 @@
-
+import usePacientes from "../hooks/usePacientes"
 
 const Paciente = ({paciente}) => {
+
+    const { setEdicion, eliminarPaciente } = usePacientes()
+
     const {nombre, propietario, email, sintomas, fecha, _id} = paciente
     
 
@@ -38,10 +41,18 @@ const Paciente = ({paciente}) => {
                 </span> 
             </p>
             <div className="flex justify-between my-5">
-                <button type="button" className="py-2 uppercase px-10 bg-indigo-500 font-bold text-white rounded-md hover:bg-indigo-700 transition-colors">
+                <button
+                    type="button"
+                    className="py-2 uppercase px-10 bg-indigo-500 font-bold text-white rounded-md hover:bg-indigo-700 transition-colors"
+                    onClick={() => setEdicion(paciente)}
+                    >       
                     Editar
                 </button>
-                <button type="button" className="py-2 uppercase px-10 bg-red-500 font-bold text-white rounded-md hover:bg-red-700 transition-colors">
+                <button
+                 type="button"
+                  className="py-2 uppercase px-10 bg-red-500 font-bold text-white rounded-md hover:bg-red-700 transition-colors"
+                  onClick={() => eliminarPaciente(_id)}
+                  >
                     Eliminar
                 </button>
             </div>

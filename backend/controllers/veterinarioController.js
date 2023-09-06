@@ -154,6 +154,65 @@ const perfil = (req, res) => {
         }
     } 
 
+    const actualizarPerfil = async (req, res) => {
+       const veterinario = await Veterinario.findById(req.params.id)
+       if (!veterinario) {
+        const error = new Error('Hubo un error')
+        return res.status(400).json({msg: error.message})
+       }
+
+       const { email } = req.body;
+       if (veterinario.email !== req.body.email)  {
+        const existeEmail = await Veterinario.findOne({ email });
+        if (existeEmail) {
+            const error = new Error('Ese Email ya está en uso');
+            return res.status(400).json({ msg: error.message});
+        }
+       }
+
+       try {
+        veterinario.nombre = req.body.nombre 
+        veterinario.email = req.body.email 
+        veterinario.web = req.body.web 
+        veterinario.telefono = req.body.telefono 
+
+        const veterinarioActualizado = await veterinario.save();
+        res.json(veterinarioActualizado)
+
+       } catch (error) {
+        console.log(error)
+       }
+
+    };
+
+    const actualizarPassword = async (req, res) => {
+        // Leer los datos
+        const { id } = req.veterinario
+        const {pwd_actual, pwd_nuevo } = req.body
+
+        // Comprobar el veterinario existe
+        
+            
+            const veterinario = await Veterinario.findById(id)
+            if (!veterinario) {
+             const error = new Error('Veterinario no encontrado')
+             return res.status(400).json({msg: error.message})
+            }
+    
+            // Comprobar el password
+            
+    if (await veterinario.comprobarPassword(pwd_actual)) {
+      // actualizar datos
+      veterinario.password = pwd_nuevo;
+      await veterinario.save();
+      res.json({ msg: "El password ha sido actualizado correctamente" });
+            } else {
+                const error = new Error('El password actual no es correcto')
+             return res.status(400).json({msg: error.message})
+            }
+     
+    }
+
     export {
         registrar,
         perfil,
@@ -161,5 +220,7 @@ const perfil = (req, res) => {
         autenticar,
         olvidePassword,
         comprobarToken,
-        nuevoPassword
+        nuevoPassword,
+        actualizarPerfil,
+        actualizarPassword,
     }
